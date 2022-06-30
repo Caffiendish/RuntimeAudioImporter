@@ -29,9 +29,10 @@ public class RuntimeAudioImporter : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				"Core"
-			}
-		);
+				"Core",
+                "SignalProcessing"
+            }
+        );
 
 #if !UE_5_00_OR_LATER
 		PrivateDependencyModuleNames.Add("AudioPlatformConfiguration");

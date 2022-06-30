@@ -34,19 +34,19 @@ bool MP3Transcoder::Decode(const FEncodedAudioStruct& EncodedData, FDecodedAudio
 	}
 
 	// Allocating memory for PCM data
-	uint8* TempPCMData = static_cast<uint8*>(FMemory::Malloc(drmp3_get_pcm_frame_count(&MP3_Decoder) * MP3_Decoder.channels * sizeof(float)));
+	uint8* TempPCMData = static_cast<uint8*>(FMemory::Malloc(drmp3_get_pcm_frame_count(&MP3_Decoder) * MP3_Decoder.channels * sizeof(int16)));
 
 	// Filling in PCM data and getting the number of frames
-	DecodedData.PCMInfo.PCMNumOfFrames = drmp3_read_pcm_frames_f32(&MP3_Decoder, drmp3_get_pcm_frame_count(&MP3_Decoder), reinterpret_cast<float*>(TempPCMData));
+	DecodedData.PCMInfo.PCMNumOfFrames = drmp3_read_pcm_frames_s16(&MP3_Decoder, drmp3_get_pcm_frame_count(&MP3_Decoder), reinterpret_cast<int16*>(TempPCMData));
 
 	// Getting PCM data size
-	const int32 TempPCMDataSize = static_cast<int32>(DecodedData.PCMInfo.PCMNumOfFrames * MP3_Decoder.channels * sizeof(float));
+	const int32 TempPCMDataSize = static_cast<int32>(DecodedData.PCMInfo.PCMNumOfFrames * MP3_Decoder.channels * sizeof(int16));
 
 	DecodedData.PCMInfo.PCMData = FBulkDataBuffer<uint8>(TempPCMData, TempPCMDataSize);
 
 	// Getting basic audio information
 	{
-		DecodedData.SoundWaveBasicInfo.Duration = static_cast<float>(drmp3_get_pcm_frame_count(&MP3_Decoder)) / MP3_Decoder.sampleRate;
+		DecodedData.SoundWaveBasicInfo.Duration = static_cast<int16>(drmp3_get_pcm_frame_count(&MP3_Decoder)) / MP3_Decoder.sampleRate;
 		DecodedData.SoundWaveBasicInfo.NumOfChannels = MP3_Decoder.channels;
 		DecodedData.SoundWaveBasicInfo.SampleRate = MP3_Decoder.sampleRate;
 	}
